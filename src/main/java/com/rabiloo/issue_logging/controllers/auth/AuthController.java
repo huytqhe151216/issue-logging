@@ -3,8 +3,6 @@ package com.rabiloo.issue_logging.controllers.auth;
 import com.rabiloo.issue_logging.DTO.Auth.AuthRequest;
 import com.rabiloo.issue_logging.DTO.Auth.AuthResponse;
 import com.rabiloo.issue_logging.DTO.Auth.RegisterRequest;
-import com.rabiloo.issue_logging.domain.User;
-import com.rabiloo.issue_logging.repositories.UserRepository;
 import com.rabiloo.issue_logging.security.JwtService;
 import com.rabiloo.issue_logging.security.UserDetailsServiceImpl;
 import com.rabiloo.issue_logging.services.AuthService;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.AuthenticationException;
 
