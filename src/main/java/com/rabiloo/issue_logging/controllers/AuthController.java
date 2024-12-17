@@ -1,4 +1,4 @@
-package com.rabiloo.issue_logging.controllers.auth;
+package com.rabiloo.issue_logging.controllers;
 
 import com.rabiloo.issue_logging.DTO.Auth.AuthRequest;
 import com.rabiloo.issue_logging.DTO.Auth.AuthResponse;
@@ -47,6 +47,7 @@ public class AuthController {
             return ResponseEntity.status(401).body(new AuthResponse("Invalid credentials!"));
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         try {

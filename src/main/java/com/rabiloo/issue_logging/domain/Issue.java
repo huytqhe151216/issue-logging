@@ -31,6 +31,8 @@ public class Issue {
     private String solution;
     @Column
     private String precaution;
+    @Column
+    private String status;
     @Column(nullable = false)
     private boolean isDeleted = false;
 
