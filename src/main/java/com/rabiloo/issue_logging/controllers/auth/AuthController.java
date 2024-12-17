@@ -7,6 +7,7 @@ import com.rabiloo.issue_logging.domain.User;
 import com.rabiloo.issue_logging.repositories.UserRepository;
 import com.rabiloo.issue_logging.security.JwtService;
 import com.rabiloo.issue_logging.security.UserDetailsServiceImpl;
+import com.rabiloo.issue_logging.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,9 +29,7 @@ public class AuthController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AuthService authService;
 
     /**
      * Login endpoint to authenticate user and generate JWT token.
@@ -42,13 +41,10 @@ public class AuthController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
             );
-
             // Generate JWT token
             String token = jwtService.generateToken(authRequest.getEmail());
-
             // Return token in response
             return ResponseEntity.ok(new AuthResponse(token));
-
         } catch (AuthenticationException e) {
             // Handle invalid authentication
             return ResponseEntity.status(401).body(new AuthResponse("Invalid credentials!"));
@@ -56,21 +52,13 @@ public class AuthController {
     }
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        // Kiểm tra nếu email đã tồn tại
-        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email đã được sử dụng!");
+        try {
+            String response = authService.register(registerRequest);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            // Email is already in use
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // Tạo và lưu người dùng mới
-        User newUser = new User();
-        newUser.setEmail(registerRequest.getEmail());
-        newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // Mã hóa mật khẩu
-        newUser.setFullName(registerRequest.getFullName());
-        newUser.setAdmin(false); // Đặt quyền mặc định
-        newUser.setDeleted(false); // Đặt trạng thái mặc định
-        userRepository.save(newUser);
-
-        return ResponseEntity.ok("Đăng ký thành công!");
     }
 
     /**
